@@ -1,49 +1,88 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-	<PropertyGroup>
-		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-		<ProjectGuid>18C855BE-1C1C-4701-B369-7D81E671E202</ProjectGuid>
-		<OutputType>Exe</OutputType>
-		<AppDesignerFolder>Properties</AppDesignerFolder>
-		<RootNamespace>Falkor</RootNamespace>
-		<AssemblyName>Falkor</AssemblyName>
-		<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-		<FileAlignment>512</FileAlignment>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-		<PlatformTarget>AnyCPU</PlatformTarget>
-		<DebugSymbols>true</DebugSymbols>
-		<DebugType>full</DebugType>
-		<Optimize>false</Optimize>
-		<OutputPath>bin\Debug\</OutputPath>
-		<DefineConstants>DEBUG;TRACE</DefineConstants>
-		<ErrorReport>prompt</ErrorReport>
-		<WarningLevel>4</WarningLevel>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<PlatformTarget>AnyCPU</PlatformTarget>
-		<DebugType>pdbonly</DebugType>
- 		<Optimize>true</Optimize>
-		<OutputPath>bin\Release\</OutputPath>
-		<DefineConstants>TRACE</DefineConstants>
-		<ErrorReport>prompt</ErrorReport>
-		<WarningLevel>4</WarningLevel>
-	</PropertyGroup>
-	<ItemGroup>
-		<Reference Include="System"/>
-		<Reference Include="System.Core"/>
-		<Reference Include="System.Xml.Linq"/>
-		<Reference Include="System.Data.DataSetExtensions"/>
-		<Reference Include="System.Data"/>
-		<Reference Include="System.Xml"/>
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Include="Program.cs" />
-		<Compile Include="Properties\AssemblyInfo.cs" />
-	</ItemGroup>
-	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>18C855BE-1C1C-4701-B369-7D81E671E202</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Falkor</RootNamespace>
+    <AssemblyName>Falkor</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Application\HandleAdapter.cs" />
+    <Compile Include="Application\HandlerModule.cs" />
+    <Compile Include="Application\IHandle.cs" />
+    <Compile Include="Application\Mediator.cs" />
+    <Compile Include="Application\TemporaryCashAccountHandlerModule.cs" />
+    <Compile Include="Application\TemporaryCashAccountHandlers.cs" />
+    <Compile Include="Application\TemporaryCashAccountRepository.cs" />
+    <Compile Include="Application\TemporaryCashAccountStorageHandler.cs" />
+    <Compile Include="EventStore\IStreamReader.cs" />
+    <Compile Include="EventStore\IStreamStore.cs" />
+    <Compile Include="EventStore\IStreamWriter.cs" />
+    <Compile Include="EventStore\MemoryEventStore.cs" />
+    <Compile Include="Messages\CloseTemporaryCashAccount.cs" />
+    <Compile Include="Messages\CreditTemporaryCashAccount.cs" />
+    <Compile Include="Messages\OpenTemporaryCashAccount.cs" />
+    <Compile Include="Messages\TemporaryCashAccountClosed.cs" />
+    <Compile Include="Messages\TemporaryCashAccountCredited.cs" />
+    <Compile Include="Messages\TemporaryCashAccountDebited.cs" />
+    <Compile Include="Messages\TemporaryCashAccountOpened.cs" />
+    <Compile Include="Messages\TemporaryCashAccountTransfered.cs" />
+    <Compile Include="Messages\TransferTemporaryCashAccount.cs" />
+    <Compile Include="Model\AggregateRootEntity.cs" />
+    <Compile Include="Model\InsufficientBalanceException.cs" />
+    <Compile Include="Model\ITemporaryCashAccountRepository.cs" />
+    <Compile Include="Model\Recorder.cs" />
+    <Compile Include="Model\Router.cs" />
+    <Compile Include="Model\OwnerId.cs" />
+    <Compile Include="Model\TemporaryCashAccount.cs" />
+    <Compile Include="Model\TemporaryCashAccountClosedException.cs" />
+    <Compile Include="Model\TemporaryCashAccountId.cs" />
+    <Compile Include="Model\TemporaryCashAccountNotFoundException.cs" />
+    <Compile Include="Model\TemporaryCashAccountTransferTokenMismatchException.cs" />
+    <Compile Include="Model\TransferToken.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Application" />
+    <Folder Include="EventStore" />
+    <Folder Include="Messages" />
+    <Folder Include="Model" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -51,5 +90,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
- </Project>
+</Project>
