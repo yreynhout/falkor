@@ -1,25 +1,25 @@
 ﻿using System;
-using System.Linq;
 
 namespace Falkor.Application
 {
   public class Mediator
   {
-    private readonly IHandlerModule[] _modules;
+    private readonly HandlerResolver _resolver;
 
-    public Mediator(params IHandlerModule[] modules)
+    public Mediator(HandlerResolver resolver)
     {
-      if (modules == null) throw new ArgumentNullException(nameof(modules));
-      _modules = modules;
+      if (resolver == null)
+        throw new ArgumentNullException(nameof(resolver));
+      _resolver = resolver;
     }
 
     public void Send(object message)
     {
-      var handler =
-        _modules.
-          SelectMany(module => module.TryResolve(message)).
-          SingleOrDefault();
-      handler?.Handle(message);
+      if (message == null) throw new ArgumentNullException(nameof(message));
+      var handler = _resolver(message);
+      if (handler == null)
+        throw new InvalidOperationException($"The handler for {message.GetType().Name} is missing.");
+      handler.Handle(message);
     }
   }
 }

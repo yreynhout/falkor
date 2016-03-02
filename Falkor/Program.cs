@@ -13,7 +13,7 @@ namespace Falkor
       {
         var store = new MemoryEventStore();
         var module = new TemporaryCashAccountHandlerModule(store);
-        var mediator = new Mediator(module);
+        var mediator = new Mediator(ResolveHandlers.Using(module));
 
         var account1 = Guid.NewGuid();
         var account2 = Guid.NewGuid();

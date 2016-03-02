@@ -41,9 +41,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application\HandleAdapter.cs" />
-    <Compile Include="Application\HandlerModule.cs" />
+    <Compile Include="Application\IHandlerModule.cs" />
+    <Compile Include="Application\HandlerResolver.cs" />
     <Compile Include="Application\IHandle.cs" />
     <Compile Include="Application\Mediator.cs" />
+    <Compile Include="Application\ResolveHandlers.cs" />
     <Compile Include="Application\TemporaryCashAccountHandlerModule.cs" />
     <Compile Include="Application\TemporaryCashAccountHandlers.cs" />
     <Compile Include="Application\TemporaryCashAccountRepository.cs" />
