@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,24 +7,24 @@ namespace Falkor.EventStore
 {
   public class MemoryEventStore : IStreamStore
   {
-    private readonly Dictionary<string, List<object>> _store;
+    private readonly ConcurrentDictionary<string, object[]> _store;
 
     public MemoryEventStore()
     {
-      _store = new Dictionary<string, List<object>>();
+      _store = new ConcurrentDictionary<string, object[]>();
     }
 
     public IEnumerable<object> ReadForward(string stream)
     {
       if (stream == null) throw new ArgumentNullException(nameof(stream));
-      List<object> history;
+      object[] history;
       return _store.TryGetValue(stream, out history) ? history.ToArray() : new object[0];
     }
 
     public IEnumerable<object> ReadBackward(string stream)
     {
       if (stream == null) throw new ArgumentNullException(nameof(stream));
-      List<object> history;
+      object[] history;
       return _store.TryGetValue(stream, out history) ? history.ToArray().Reverse() : new object[0];
     }
 
@@ -31,15 +32,16 @@ namespace Falkor.EventStore
     {
       if (stream == null) throw new ArgumentNullException(nameof(stream));
       if (messages == null) throw new ArgumentNullException(nameof(messages));
-      List<object> history;
-      if (!_store.TryGetValue(stream, out history))
-      {
-        _store.Add(stream, messages.ToList());
-      }
-      else
-      {
-        history.AddRange(messages);
-      }
+      var snapshot = messages.ToArray();
+      _store.AddOrUpdate(stream,
+        snapshot,
+        (_, history) =>
+        {
+          var copy = new object[history.Length + snapshot.Length];
+          history.CopyTo(copy, 0);
+          snapshot.CopyTo(copy, history.Length);
+          return copy;
+        });
     }
   }
 }
