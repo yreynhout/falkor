@@ -3,7 +3,7 @@ using Falkor.Messages;
 
 namespace Falkor.Model
 {
-  public class TemporaryCashAccount : AggregateRootEntity
+  public class TemporaryCashAccount : IAggregateRootEntity
   {
     public TemporaryCashAccountId Id => _temporaryCashAccountId;
 
@@ -68,8 +68,6 @@ namespace Falkor.Model
       }
     }
 
-    public static readonly Func<TemporaryCashAccount> Factory = () => new TemporaryCashAccount();
-
     private TemporaryCashAccountId _temporaryCashAccountId;
     private OwnerId _ownerId;
     private int _revision;
@@ -77,9 +75,10 @@ namespace Falkor.Model
     private TransferToken _transferToken;
     private TemporaryCashAccountId? _transferedToTemporaryCashAccountId;
 
+    public static readonly Func<TemporaryCashAccount> Factory = () => new TemporaryCashAccount();
     private TemporaryCashAccount()
     {
-      Configure<TemporaryCashAccountOpened>(m =>
+      _router.Configure<TemporaryCashAccountOpened>(m =>
       {
         _temporaryCashAccountId = new TemporaryCashAccountId(m.TemporaryCashAccountId);
         _ownerId = new OwnerId(m.OwnerId);
@@ -88,7 +87,7 @@ namespace Falkor.Model
         _revision = 0;
         _transferedToTemporaryCashAccountId = null;
       });
-      Configure<TemporaryCashAccountTransfered>(m =>
+      _router.Configure<TemporaryCashAccountTransfered>(m =>
       {
         _temporaryCashAccountId = new TemporaryCashAccountId(m.NewTemporaryCashAccountId);
         _ownerId = new OwnerId(m.OwnerId);
@@ -97,24 +96,34 @@ namespace Falkor.Model
         _revision = 0;
         _transferedToTemporaryCashAccountId = null;
       });
-      Configure<TemporaryCashAccountDebited>(m =>
+      _router.Configure<TemporaryCashAccountDebited>(m =>
       {
         _balance -= m.Amount;
 
         _revision += 1;
       });
-      Configure<TemporaryCashAccountCredited>(m =>
+      _router.Configure<TemporaryCashAccountCredited>(m =>
       {
         _balance += m.Amount;
 
         _revision += 1;
       });
-      Configure<TemporaryCashAccountClosed>(m =>
+      _router.Configure<TemporaryCashAccountClosed>(m =>
       {
         _transferedToTemporaryCashAccountId = new TemporaryCashAccountId(m.NewTemporaryCashAccountId);
 
         _revision += 1;
       });
+    }
+
+    private readonly Router _router = new Router();
+    private readonly Recorder _recorder = new Recorder();
+    Router IAggregateRootEntity.Router => _router;
+    Recorder IAggregateRootEntity.Recorder => _recorder;
+    private void Apply(object record)
+    {
+      _router.Route(record);
+      _recorder.Record(record);
     }
   }
 }

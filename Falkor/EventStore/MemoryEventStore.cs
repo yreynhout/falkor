@@ -18,14 +18,14 @@ namespace Falkor.EventStore
     {
       if (stream == null) throw new ArgumentNullException(nameof(stream));
       object[] history;
-      return _store.TryGetValue(stream, out history) ? history.ToArray() : new object[0];
+      return _store.TryGetValue(stream, out history) ? history : new object[0];
     }
 
     public IEnumerable<object> ReadBackward(string stream)
     {
       if (stream == null) throw new ArgumentNullException(nameof(stream));
       object[] history;
-      return _store.TryGetValue(stream, out history) ? history.ToArray().Reverse() : new object[0];
+      return _store.TryGetValue(stream, out history) ? history.Reverse() : new object[0];
     }
 
     public void Append(string stream, IEnumerable<object> messages)

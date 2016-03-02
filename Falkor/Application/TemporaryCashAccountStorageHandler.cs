@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Falkor.EventStore;
+using Falkor.Model;
 
 namespace Falkor.Application
 {
@@ -24,11 +25,12 @@ namespace Falkor.Application
     {
       _next.Handle(message);
 
-      var affected = _repository.UnitOfWork.SingleOrDefault(_ => _.GetRecords().Any());
-      if (affected != null)
-      {
-        _writer.Append(affected.Id.ToString(), affected.GetRecords());
-      }
+      //Smells like the wrong abstraction with all this casting ...
+      var affected = _repository.UnitOfWork.SingleOrDefault(_ => ((IAggregateRootEntity)_).Recorder.Records.Any());
+      if (affected == null) return;
+
+      _writer.Append(affected.Id.ToString(), ((IAggregateRootEntity)affected).Recorder.Records);
+      ((IAggregateRootEntity)affected).Recorder.Reset();
     }
   }
 }

@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\AggregateRootEntityBehavior.cs" />
     <Compile Include="Application\HandleAdapter.cs" />
     <Compile Include="Application\IHandlerModule.cs" />
     <Compile Include="Application\HandlerResolver.cs" />
@@ -63,7 +64,7 @@
     <Compile Include="Messages\TemporaryCashAccountOpened.cs" />
     <Compile Include="Messages\TemporaryCashAccountTransfered.cs" />
     <Compile Include="Messages\TransferTemporaryCashAccount.cs" />
-    <Compile Include="Model\AggregateRootEntity.cs" />
+    <Compile Include="Model\IAggregateRootEntity.cs" />
     <Compile Include="Model\InsufficientBalanceException.cs" />
     <Compile Include="Model\ITemporaryCashAccountRepository.cs" />
     <Compile Include="Model\Recorder.cs" />
